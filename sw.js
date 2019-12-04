@@ -22,16 +22,26 @@ self.addEventListener('activate', function(event) {
 
 
 
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open('mysite-static-v3').then(function(cache) {
-      return cache.addAll([
-        '/css/whatever-v3.css',
-        '/css/imgs/sprites-v6.png',
-        '/css/fonts/whatever-v8.woff',
-        '/js/all-min-v4.js'
-        // etc
-      ]);
-    })
-  );
+// self.addEventListener('install', function(event) {
+//   event.waitUntil(
+//     caches.open('mysite-static-v3').then(function(cache) {
+//       return cache.addAll([
+//         '/css/whatever-v3.css',
+//         '/css/imgs/sprites-v6.png',
+//         '/css/fonts/whatever-v8.woff',
+//         '/js/all-min-v4.js'
+//         // etc
+//       ]);
+//     })
+//   );
+// });
+
+
+self.addEventListener('push', function(event) {
+  if (event.data) {
+    self.registration.showNotification("Hello World", event.data);
+    console.log('This push event has data: ', event.data.text());
+  } else {
+    console.log('This push event has no data.');
+  }
 });

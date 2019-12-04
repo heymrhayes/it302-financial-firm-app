@@ -1,4 +1,4 @@
-    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="customers">
+    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="transactions">
     <li class="mdc-list-item mdc-ripple-upgraded template">
         <span class="mdc-list-item__text">
             <span class="mdc-list-item__primary-text"></span>
@@ -7,26 +7,25 @@
 
 
 <script>
-    var url = apiEndpoint + "customers";
-    var template = $("ul#customers li.template");
-    var ul = $("ul#customers");
+    var url = apiEndpoint + "accounts/" + targetAccountId + "/transactions";
+    var template = $("ul#transactions li.template");
+    var ul = $("ul#transactions");
     var listDividerHTML = '<li role="separator" class="mdc-list-divider"></li>';
     console.log(url);
-    $("#customers li").off("click");
+    $("#transactions li").off("click");
     $.get(url, function(response) {
         $.each(response, function(i,v) {
             ul.append(listDividerHTML);
             let clone = template.clone();
-            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + v.first_name + " " + v.last_name);
+            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + (v.type == 'B' ? 'Buy ' : 'Sell ') + v.shares + ' shares of ' + v.symbol + " at " + v.price);
             
-            clone.find(".mdc-list-item__secondary-text").text(v.address_1 + ", " + v.city + ", " + v.state);
+            clone.find(".mdc-list-item__secondary-text").text(v.name + " Total: " + (v.shares * v.price).toFixed(2));
             clone.attr("data-id", v.id);
             clone.removeClass("template");
             ul.append(clone);
         }) 
-        $("#customers li").on("click", function(e) {
+        $("#transactions li").on("click", function(e) {
            targetCustomerId = $(this).attr("data-id");
-           targetEmployeeId = 0;
            let file = "/page-content/_customer.html";
            $("#content").load(file);   
         });

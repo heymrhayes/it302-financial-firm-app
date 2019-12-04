@@ -1,4 +1,4 @@
-    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="customers">
+    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="employees">
     <li class="mdc-list-item mdc-ripple-upgraded template">
         <span class="mdc-list-item__text">
             <span class="mdc-list-item__primary-text"></span>
@@ -7,27 +7,27 @@
 
 
 <script>
-    var url = apiEndpoint + "customers";
-    var template = $("ul#customers li.template");
-    var ul = $("ul#customers");
+    var url = apiEndpoint + "employees";
+    var template = $("ul#employees li.template");
+    var ul = $("ul#employees");
     var listDividerHTML = '<li role="separator" class="mdc-list-divider"></li>';
     console.log(url);
-    $("#customers li").off("click");
+    $("#employees li").off("click");
     $.get(url, function(response) {
         $.each(response, function(i,v) {
             ul.append(listDividerHTML);
             let clone = template.clone();
-            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + v.first_name + " " + v.last_name);
+            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + v.first_name + " " + v.last_name + ', ' + v.role );
             
-            clone.find(".mdc-list-item__secondary-text").text(v.address_1 + ", " + v.city + ", " + v.state);
+            clone.find(".mdc-list-item__secondary-text").text(v.email + ' - hired: ' + v.hire_date.split('T')[0]);
             clone.attr("data-id", v.id);
             clone.removeClass("template");
             ul.append(clone);
         }) 
-        $("#customers li").on("click", function(e) {
-           targetCustomerId = $(this).attr("data-id");
-           targetEmployeeId = 0;
-           let file = "/page-content/_customer.html";
+        $("#employees li").on("click", function(e) {
+           targetEmployeeId = $(this).attr("data-id");
+           targetCustomerId = 0;
+            let file = "/page-content/_employee.html";
            $("#content").load(file);   
         });
     });

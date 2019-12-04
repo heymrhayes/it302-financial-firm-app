@@ -17,6 +17,7 @@
         --mdc-theme-primary: #001E62;
       }
       .template {display:none;}
+        .mdc-dialog__container {margin:5px;}
     </style>
 
 
@@ -94,6 +95,80 @@
   </ul>
 
 </div>
+<div id="modalTransaction"
+    class="mdc-dialog"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="my-dialog-title"
+     aria-describedby="my-dialog-content"
+     data-mdc-auto-init="MDCDialog">
+  <div class="mdc-dialog__container">
+    <div class="mdc-dialog__surface">
+      <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+      <h2 class="mdc-dialog__title" id="my-dialog-title">
+        Buy/Sell
+        </h2>
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" value="buy" id="buy" name="transactionType">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+                <div class="mdc-radio__ripple"></div>
+              </div>
+              <label for="buy">Buy</label>
+            </div> 
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" value="sell" id="sell" name="transactionType" checked>
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+                <div class="mdc-radio__ripple"></div>
+              </div>
+              <label for="sell">Sell</label>
+            </div> 
+        
+        
+        
+          <div class="mdc-text-field mdc-text-field--no-label">
+          <input id="symbol" type="text" class="mdc-text-field__input" placeholder="Enter symbol" aria-label="Label">
+          <div class="mdc-line-ripple"></div>
+        </div>        
+      <div class="mdc-dialog__content" id="my-dialog-content">
+        <div class="mdc-text-field mdc-text-field--no-label">
+          <input id="shares" type="text" class="mdc-text-field__input" placeholder="Enter number of shares" aria-label="Label">
+          <div class="mdc-line-ripple"></div>
+        </div>      
+          
+          
+          
+          
+          
+
+          
+          
+          
+          
+      </div>
+      <footer class="mdc-dialog__actions">
+        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
+          <span class="mdc-button__label">Cancel</span>
+        </button>
+        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="yes">
+          <span class="mdc-button__label">Submit</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+  <div class="mdc-dialog__scrim"></div>
+</div>      
+      
+      
+      
+      
     <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
     <script>
       var db = new Dexie("finapp");
@@ -103,9 +178,15 @@
         
         
       let apiEndpoint = "";  
+      let targetCustomerId = 0, targetAccountId, targetEmployeeId = 0, targetTransactionId;
         
       db.settings.get("apiDomain").then(function(setting) {
-        apiEndpoint = setting.value;
+        if (setting) {
+            apiEndpoint = setting.value;
+        } else {
+            db.settings.put({"name":"apiDomain", "value":"none"})
+        }
+          
       });
       
         
@@ -120,6 +201,7 @@
       // mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer')); 
       const drawer = document.querySelector('.mdc-drawer').MDCDrawer;
       // console.log(drawer);
+      const modalTransaction = document.querySelector('#modalTransaction').MDCDialog;
     
       // open drawer on nav icon
       document.getElementsByClassName("mdc-top-app-bar__navigation-icon")[0].addEventListener("click", function(){
@@ -146,9 +228,38 @@
             
         });
         
+        $('[data-mdc-dialog-action="yes"]').on("click", function(e) {
+            let url = apiEndpoint + "transactions";
+            let requestBody = {
+                "account": targetAccountId,
+                "symbol": $("#symbol").val(),
+                "shares": $("#shares").val(),
+                "type": $("input[name='transactionType']:checked").val()
+            }
+            $.ajax({
+                    method: "POST",
+                    contentType: "application/json",
+                    url: url,
+                    data: JSON.stringify(requestBody)
+                  })
+                    .done(function(response) { 
+                        console.log(response);
+                    });         
+            
+            
+        })
+
+        
+        
 
     </script>
-    
+    <script>
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                         .register('./sw.js');
+              }
+      
+      </script>
 
   </body>
 </html>

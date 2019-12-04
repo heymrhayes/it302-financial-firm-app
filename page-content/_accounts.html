@@ -1,4 +1,4 @@
-    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="customers">
+    <ul class="mdc-list demo-list mdc-list--two-line mdc-list--avatar-list" id="accounts">
     <li class="mdc-list-item mdc-ripple-upgraded template">
         <span class="mdc-list-item__text">
             <span class="mdc-list-item__primary-text"></span>
@@ -7,9 +7,15 @@
 
 
 <script>
-    var url = apiEndpoint + "customers";
-    var template = $("ul#customers li.template");
-    var ul = $("ul#customers");
+    var url = apiEndpoint + "customers/" + targetCustomerId + "/accounts";
+    
+    if (targetEmployeeId != 0) {
+        url = apiEndpoint + "employees/" + targetEmployeeId + "/accounts";
+    } 
+    
+    
+    var template = $("ul#accounts li.template");
+    var ul = $("ul#accounts");
     var listDividerHTML = '<li role="separator" class="mdc-list-divider"></li>';
     console.log(url);
     $("#customers li").off("click");
@@ -17,17 +23,16 @@
         $.each(response, function(i,v) {
             ul.append(listDividerHTML);
             let clone = template.clone();
-            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + v.first_name + " " + v.last_name);
+            clone.find(".mdc-list-item__primary-text").text(v.id + ": " + v.name );
             
-            clone.find(".mdc-list-item__secondary-text").text(v.address_1 + ", " + v.city + ", " + v.state);
+            clone.find(".mdc-list-item__secondary-text").text(v.type);
             clone.attr("data-id", v.id);
             clone.removeClass("template");
             ul.append(clone);
         }) 
-        $("#customers li").on("click", function(e) {
-           targetCustomerId = $(this).attr("data-id");
-           targetEmployeeId = 0;
-           let file = "/page-content/_customer.html";
+        $("#accounts li").on("click", function(e) {
+           targetAccountId = $(this).attr("data-id");
+           let file = "/page-content/_account.html";
            $("#content").load(file);   
         });
     });
