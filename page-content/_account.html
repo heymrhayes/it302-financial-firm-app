@@ -7,7 +7,7 @@
   </div>
   <div class="mdc-card__actions">
     <div class="mdc-card__action-buttons">
-      <button class="mdc-button mdc-card__action mdc-card__action--button">
+      <button id="btnPositions" class="mdc-button mdc-card__action mdc-card__action--button">
         <span class="mdc-button__label">Positions</span>
       </button>
       <button id="btnTransactions" class="mdc-button mdc-card__action mdc-card__action--button">
@@ -42,6 +42,12 @@
            let file = "page-content/_transactions.html";
            $("#content").load(file);     
     });
+    
+    $("#btnPositions.mdc-card__action--button").on("click", function(e) {
+           let file = "page-content/_positions.html";
+           $("#content").load(file);     
+    });    
+    
     
     $("#btnBuySell.mdc-card__action--button").on("click", function(e) {
            
