@@ -27,7 +27,7 @@
         $("#employees li").on("click", function(e) {
            targetEmployeeId = $(this).attr("data-id");
            targetCustomerId = 0;
-            let file = "/page-content/_employee.html";
+            let file = "page-content/_employee.html";
            $("#content").load(file);   
         });
     });
